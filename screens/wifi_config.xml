@@ -1,0 +1,165 @@
+<!--
+  29/31: Wireless configuration. Left buttons pick subject_wifi_mode
+  (0 = manual SSID/password form, 1 = shared-key QR view); the right panel
+  swaps content declaratively via bind_flag_if_not_eq. MAC/version info and
+  the divider are shared between both modes, as in the prototype.
+-->
+<screen permanent="true">
+	<styles>
+		<style name="style_mode_btn" width="200" height="64" radius="14" bg_opa="100%" border_width="0" />
+		<style name="style_mode_btn_active" outline_width="3" outline_opa="80%" />
+		<style name="style_right_panel" bg_color="#col_card" bg_opa="100%" radius="#radius_card" border_width="0" pad_all="10" />
+		<style
+			name="style_field_input"
+			bg_color="#col_bg"
+			bg_opa="100%"
+			radius="10"
+			border_width="0"
+			width="100%"
+			height="34"
+			text_color="#col_text"
+		/>
+		<style name="style_divider" bg_color="#col_text_dim" bg_opa="40%" border_width="0" height="1" width="100%" />
+		<style name="style_qr_placeholder" bg_color="0xffffff" bg_opa="100%" radius="8" border_width="0" width="110" height="110" />
+	</styles>
+
+	<view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+		<style name="style_screen_bg" />
+		<header title="Configuração de rede" icon="&#61931;" />
+
+		<lv_obj
+			width="100%"
+			flex_grow="1"
+			style_bg_opa="0"
+			style_border_width="0"
+			flex_flow="row"
+			style_pad_hor="20"
+			style_pad_column="20"
+			style_pad_bottom="8"
+			scrollable="false"
+		>
+			<!-- left: mode selector -->
+			<lv_obj
+				width="content"
+				height="100%"
+				flex_flow="column"
+				style_bg_opa="0"
+				style_border_width="0"
+				style_pad_row="16"
+				style_flex_main_place="center"
+				scrollable="false"
+			>
+				<lv_button style_bg_color="#col_blue">
+					<style name="style_mode_btn" />
+					<style name="style_mode_btn_active" selector="checked" />
+					<bind_state_if_eq subject="subject_wifi_mode" state="checked" ref_value="0" />
+					<lv_label
+						text="Rede manual"
+						align="center"
+						style_text_color="#col_text"
+						style_text_font="text_16"
+					/>
+					<subject_set_int_event subject="subject_wifi_mode" trigger="clicked" value="0" />
+				</lv_button>
+				<lv_button style_bg_color="#col_yellow">
+					<style name="style_mode_btn" />
+					<style name="style_mode_btn_active" selector="checked" />
+					<bind_state_if_eq subject="subject_wifi_mode" state="checked" ref_value="1" />
+					<lv_label
+						text="Rede de compart. de chaves"
+						align="center"
+						width="170"
+						long_mode="wrap"
+						style_text_align="center"
+						style_text_color="#col_text"
+						style_text_font="text_14"
+					/>
+					<subject_set_int_event subject="subject_wifi_mode" trigger="clicked" value="1" />
+				</lv_button>
+			</lv_obj>
+
+			<!-- right: mode content -->
+			<lv_obj flex_grow="1" height="100%" flex_flow="column" style_pad_row="6" style_flex_main_place="center" scrollable="false">
+				<style name="style_right_panel" />
+
+				<!-- manual network form: shown while mode == 0. Both this panel and
+				     its shared-key sibling below now use the SAME fixed height
+				     (instead of each sizing to its own "content") so the divider/
+				     MAC/Version block underneath always lands at the same Y no
+				     matter which mode is active - with "content" sizing they were
+				     two different heights, so switching modes visibly shifted
+				     everything below, and in the taller (manual) case the content
+				     overflowed this column's available height and pushed MAC/
+				     Version past the bottom edge since scrolling is disabled. -->
+				<lv_obj width="100%" height="190" flex_flow="column" style_bg_opa="0" style_border_width="0" style_pad_row="6" scrollable="false">
+					<bind_flag_if_not_eq subject="subject_wifi_mode" flag="hidden" ref_value="0" />
+					<lv_label text="Nome da rede:" style_text_color="#col_text" style_text_font="text_14" />
+					<lv_textarea name="wifi_ssid_ta" one_line="true" placeholder_text="SSID">
+						<style name="style_field_input" />
+						<event_cb callback="wifi_field_focus_cb" trigger="clicked" />
+					</lv_textarea>
+					<lv_label text="Senha:" style_text_color="#col_text" style_text_font="text_14" />
+					<lv_textarea name="wifi_pass_ta" one_line="true" password_mode="true" placeholder_text="Senha">
+						<style name="style_field_input" />
+						<event_cb callback="wifi_field_focus_cb" trigger="clicked" />
+					</lv_textarea>
+					<lv_button width="160" height="32" style_bg_color="#col_blue">
+						<style name="style_pill_btn" />
+						<style name="style_pill_btn_pressed" selector="pressed" />
+						<lv_label text="Iniciar" align="center" />
+					</lv_button>
+				</lv_obj>
+
+				<!-- shared-key network: shown while mode == 1. Same fixed height as
+				     the manual form above (see comment there). QR placeholder and
+				     button are pinned with align+ignore_layout instead of relying
+				     on flex_flow/style_flex_cross_place="center" - that flex
+				     cross-axis centering has proven unreliable in this Editor/LVGL
+				     build in several other spots this project (the main_menu red
+				     card's arc/label/button-row, and its own media-button row),
+				     so align+ignore_layout is the proven-working approach here too. -->
+				<lv_obj width="100%" height="190" style_bg_opa="0" style_border_width="0" scrollable="false">
+					<bind_flag_if_not_eq subject="subject_wifi_mode" flag="hidden" ref_value="1" />
+					<lv_obj align="center" y="-28" ignore_layout="true">
+						<style name="style_qr_placeholder" />
+					</lv_obj>
+					<lv_button align="center" y="67" ignore_layout="true" width="340" height="32" style_bg_color="#col_blue">
+						<style name="style_pill_btn" />
+						<style name="style_pill_btn_pressed" selector="pressed" />
+						<lv_label
+							text="Iniciar uma rede de compart. de chaves"
+							align="center"
+							width="308"
+							long_mode="wrap"
+							style_text_align="center"
+							style_text_font="text_14"
+						/>
+					</lv_button>
+				</lv_obj>
+
+				<lv_obj>
+					<style name="style_divider" />
+				</lv_obj>
+				<lv_label text="MAC:" style_text_color="#col_text_dim" style_text_font="text_14" />
+				<lv_label text="Versão:" style_text_color="#col_text_dim" style_text_font="text_14" />
+			</lv_obj>
+		</lv_obj>
+
+		<bottom_nav />
+
+		<!-- Shared keyboard for both SSID and password fields, retargeted in C
+		     (wifi_field_focus_cb) to whichever textarea was tapped via
+		     lv_keyboard_set_textarea - lv_keyboard's XML "textarea" attribute
+		     only binds a fixed target at creation time, so a single overlay
+		     covering both fields needs the C-side retarget instead of two
+		     separate keyboards. Slides up from the bottom over bottom_nav
+		     (drawn last = on top) while the fields stay visible above it.
+		     Password masking (cyphering) comes from password_mode="true" on
+		     wifi_pass_ta itself, independent of whatever types into it. -->
+		<lv_keyboard name="wifi_kb" width="100%" height="200" align="bottom_mid" ignore_layout="true" mode="text_lower">
+			<bind_flag_if_eq subject="subject_wifi_kb_visible" flag="hidden" ref_value="0" />
+			<subject_set_int_event subject="subject_wifi_kb_visible" trigger="ready" value="0" />
+			<subject_set_int_event subject="subject_wifi_kb_visible" trigger="cancel" value="0" />
+		</lv_keyboard>
+	</view>
+</screen>

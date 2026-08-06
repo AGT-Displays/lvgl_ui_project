@@ -1,0 +1,107 @@
+<globals>
+    <api>
+        <!-- Add <enumdefs> here -->
+    </api>
+
+    <consts>
+        <color name="col_bg" value="0x12142a" help="Screen background"/>
+        <color name="col_card" value="0x1c1f3a" help="Card / panel background"/>
+        <color name="col_card_light" value="0x262a4d" help="Lighter card / pressed panel"/>
+        <color name="col_text" value="0xffffff" help="Primary text"/>
+        <color name="col_text_dim" value="0x9aa0c0" help="Secondary text"/>
+        <color name="col_purple" value="0x8b5cf6" help="Purple accent (wordart / wifi)"/>
+        <color name="col_purple_dark" value="0x6d28d9" help="Purple pressed"/>
+        <color name="col_teal" value="0x14b8a6" help="Teal accent (numeric / icons)"/>
+        <color name="col_teal_dark" value="0x0f9488" help="Teal pressed"/>
+        <color name="col_red" value="0xef5170" help="Red/pink accent (temp / animation)"/>
+        <color name="col_red_dark" value="0xc23955" help="Red pressed"/>
+        <color name="col_blue" value="0x3aa0f3" help="Blue accent (weather / popup / wifi)"/>
+        <color name="col_blue_dark" value="0x2680cc" help="Blue pressed"/>
+        <color name="col_green" value="0x22c55e" help="Green accent (keyboard / confirm)"/>
+        <color name="col_green_dark" value="0x18a34c" help="Green pressed"/>
+        <color name="col_yellow" value="0xf4b740" help="Yellow accent (shared key / manual)"/>
+        <color name="col_yellow_dark" value="0xd39c2c" help="Yellow pressed"/>
+        <px name="radius_card" value="18" help="Standard card corner radius"/>
+        <px name="radius_pill" value="24" help="Pill / header corner radius"/>
+    </consts>
+
+    <styles>
+        <style name="style_screen_bg" bg_color="#col_bg" bg_opa="100%" pad_all="0" border_width="0" radius="0"/>
+
+        <style name="style_card" bg_color="#col_card" bg_opa="100%" radius="#radius_card" border_width="0" pad_all="12"/>
+
+        <style name="style_header_pill" bg_color="#col_card" bg_opa="100%" radius="#radius_pill" pad_hor="18" pad_ver="10" border_width="0"/>
+
+        <style name="style_header_title" text_color="#col_text" text_font="text_18"/>
+
+        <style name="style_nav_icon_btn" radius="180" bg_opa="100%" shadow_width="0" border_width="0"/>
+        <style name="style_nav_icon_btn_pressed" transform_width="-4" transform_height="-4"/>
+
+        <style name="style_value_text" text_color="#col_text" text_font="text_48"/>
+
+        <style name="style_label_dim" text_color="#col_text_dim" text_font="text_14"/>
+
+        <style name="style_pill_btn" bg_opa="100%" radius="#radius_pill" text_color="#col_text" pad_hor="16" pad_ver="10" border_width="0"/>
+        <style name="style_pill_btn_pressed" transform_width="-4" transform_height="-4"/>
+    </styles>
+
+    <subjects>
+        <int name="subject_numval" value="0"/>
+        <int name="subject_kb_visible" value="0"/>
+        <int name="subject_current_icon" value="1"/>
+        <int name="subject_expanded_row" value="0"/>
+        <int name="subject_wifi_mode" value="0"/>
+        <int name="subject_wifi_kb_visible" value="0"/>
+        <int name="subject_brightness" value="100"/>
+        <int name="subject_anim_playing" value="0"/>
+        <int name="subject_text_kb_visible" value="0"/>
+        <string name="subject_entry_text" value="Tap to enter text"/>
+    </subjects>
+
+    <images>
+        <!-- Add <file> or <data> tags here -->
+    </images>
+
+    <fonts>
+        <!--
+          Custom-registered Montserrat sizes for real text (titles, labels,
+          numbers). Range 0x20-0xFF covers ASCII + Latin-1 Supplement, so all
+          Portuguese accents (ã, ç, á, é, í, ó, ú, Í, Ç, ...) and the degree
+          sign render correctly.
+        -->
+        <bin name="text_14" src_path="fonts/static/Montserrat-Regular.ttf" size="14" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_16" src_path="fonts/static/Montserrat-Regular.ttf" size="16" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_18" src_path="fonts/static/Montserrat-Medium.ttf" size="18" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_20" src_path="fonts/static/Montserrat-Regular.ttf" size="20" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_32" src_path="fonts/static/Montserrat-SemiBold.ttf" size="32" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_48" src_path="fonts/static/Montserrat-SemiBold.ttf" size="48" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_64" src_path="fonts/static/Montserrat-SemiBold.ttf" size="64" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_80" src_path="fonts/static/Montserrat-SemiBold.ttf" size="80" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_96" src_path="fonts/static/Montserrat-SemiBold.ttf" size="96" bpp="4" range="0x20-0xFF" as_file="false"/>
+        <bin name="text_128" src_path="fonts/static/Montserrat-SemiBold.ttf" size="128" bpp="4" range="0x20-0xFF" as_file="false"/>
+
+        <!--
+          Icon labels (nav bar, header, media buttons, popup pills, etc.) use
+          numeric-entity codepoints from LVGL's private-use-area LV_SYMBOL_*
+          range - the same icons baked into LVGL's own built-in
+          lv_font_montserrat_* fonts. Those built-in fonts aren't reachable
+          from hand-written XML by their real C names (lv_font_montserrat_18,
+          not "montserrat_18" - that's what caused "use of undeclared
+          identifier 'montserrat_18'" build errors), and unregistered font
+          names only silently fell back to the default font in the Editor's
+          live XML preview, never in a real compiled build. So each icon size
+          actually used in this project is registered here from LVGL's own
+          published FontAwesome subset (fonts/FontAwesome5-Solid+Brands+Regular.woff,
+          from https://lvgl.io/assets/others/FontAwesome5-Solid+Brands+Regular.woff),
+          pulling in only the exact glyphs (via `symbols`, as literal
+          codepoint entities) referenced somewhere in the XML at that size -
+          keeps each font small instead of converting the whole icon set.
+        -->
+        <bin name="icon_14" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="14" bpp="4" as_file="false" symbols="&#61512;&#61521;&#61559;&#61560;"/>
+        <bin name="icon_18" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="18" bpp="4" as_file="false" symbols="&#61473;&#61461;&#61641;&#62212;&#61448;&#61502;&#61931;&#61451;&#61559;&#61560;&#61515;"/>
+        <bin name="icon_20" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="20" bpp="4" as_file="false" symbols="&#61543;&#61561;&#61556;&#61522;&#61512;&#61553;&#61683;&#61664;&#61465;&#61459;&#61587;&#61639;&#61732;"/>
+        <bin name="icon_24" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="24" bpp="4" as_file="false" symbols="&#61515;&#61517;&#62212;&#61448;&#61502;&#61641;&#61724;"/>
+        <bin name="icon_32" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="32" bpp="4" as_file="false" symbols="&#61671;&#61543;&#61561;&#61556;&#61522;&#61512;&#61553;&#61683;&#61664;&#61465;&#61459;&#61587;&#61639;&#61732;&#61931;"/>
+        <bin name="icon_48" src_path="fonts/FontAwesome5-Solid+Brands+Regular.woff" size="48" bpp="4" as_file="false" symbols="&#61473;&#61502;&#61683;&#61553;"/>
+    </fonts>
+</globals>

@@ -1,0 +1,11 @@
+preview-build
+build
+.cache.json
+.claude
+preview-bin
+*.o
+*.obj
+.vs/
+Thumbs.db
+.DS_Store
+*.log

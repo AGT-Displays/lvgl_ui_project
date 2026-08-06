@@ -1,0 +1,68 @@
+<!--
+  33/34: Brightness. 4 selectable level cards; the checked state (lit blue,
+  matching the "pressed" look in prototype image 34) is bound declaratively
+  to subject_brightness via bind_state_if_eq, one binding per card value.
+-->
+<screen permanent="true">
+  <styles>
+    <style name="style_bright_card" width="150" height="170" radius="#radius_card" bg_opa="100%" border_width="0"/>
+    <style name="style_bright_card_checked" bg_color="#col_blue" bg_grad_color="0x1c6fd0" bg_grad_dir="ver"/>
+  </styles>
+
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="Brilho" icon="&#61473;"/>
+
+    <!-- Outer lv_obj just reserves the header-to-bottom_nav band via
+         flex_grow. The actual card row is a separate, content-sized child
+         pinned with align="center"+ignore_layout instead of the band's own
+         flex_flow/style_flex_cross_place - flex cross-axis centering has
+         proven unreliable in this Editor/LVGL build in several other spots
+         this project (main_menu's red card contents, its media-button row,
+         wifi_config's QR/button pair), consistently landing off-true-center;
+         align="center" on a fixed-size child has been the reliable fix each
+         time. -->
+    <lv_obj width="100%" flex_grow="1" style_bg_opa="0" style_border_width="0" scrollable="false">
+      <lv_obj align="center" ignore_layout="true" width="100%" height="content" flex_flow="row" style_bg_opa="0" style_border_width="0" style_pad_hor="20" style_pad_column="16" style_flex_main_place="center" scrollable="false">
+
+        <lv_button style_bg_color="#col_card_light">
+          <style name="style_bright_card"/>
+          <style name="style_bright_card_checked" selector="checked"/>
+          <bind_state_if_eq subject="subject_brightness" state="checked" ref_value="0"/>
+          <lv_label text="0" align="top_right" style_text_color="#col_text" style_text_font="text_14"/>
+          <lv_label text="&#61671;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+          <subject_set_int_event subject="subject_brightness" trigger="clicked" value="0"/>
+        </lv_button>
+
+        <lv_button style_bg_color="#col_card_light">
+          <style name="style_bright_card"/>
+          <style name="style_bright_card_checked" selector="checked"/>
+          <bind_state_if_eq subject="subject_brightness" state="checked" ref_value="30"/>
+          <lv_label text="30" align="top_right" style_text_color="#col_text" style_text_font="text_14"/>
+          <lv_label text="&#61671;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+          <subject_set_int_event subject="subject_brightness" trigger="clicked" value="30"/>
+        </lv_button>
+
+        <lv_button style_bg_color="#col_card_light">
+          <style name="style_bright_card"/>
+          <style name="style_bright_card_checked" selector="checked"/>
+          <bind_state_if_eq subject="subject_brightness" state="checked" ref_value="70"/>
+          <lv_label text="70" align="top_right" style_text_color="#col_text" style_text_font="text_14"/>
+          <lv_label text="&#61671;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+          <subject_set_int_event subject="subject_brightness" trigger="clicked" value="70"/>
+        </lv_button>
+
+        <lv_button style_bg_color="#col_card_light">
+          <style name="style_bright_card"/>
+          <style name="style_bright_card_checked" selector="checked"/>
+          <bind_state_if_eq subject="subject_brightness" state="checked" ref_value="100"/>
+          <lv_label text="100" align="top_right" style_text_color="#col_text" style_text_font="text_14"/>
+          <lv_label text="&#61671;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+          <subject_set_int_event subject="subject_brightness" trigger="clicked" value="100"/>
+        </lv_button>
+      </lv_obj>
+    </lv_obj>
+
+    <bottom_nav/>
+  </view>
+</screen>

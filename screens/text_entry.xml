@@ -1,0 +1,41 @@
+<!--
+  26/27: Text entry. The panel shows the committed subject_entry_text; tapping
+  it reveals a fresh textarea + keyboard. The keyboard's own Enter key (ready
+  trigger) commits the typed text via the small C callback
+  text_entry_confirm_cb (see src/ui_callbacks.c); its own Esc key (cancel
+  trigger) just hides the overlay declaratively, leaving the committed text
+  untouched.
+-->
+<screen permanent="true">
+  <styles>
+    <style name="style_text_panel" bg_color="#col_card" bg_opa="100%" radius="#radius_card" border_width="0" pad_all="20"/>
+  </styles>
+
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="Entrada de texto" icon="&#61451;"/>
+
+    <lv_obj width="100%" flex_grow="1" style_bg_opa="0" style_border_width="0" style_pad_hor="20" style_pad_bottom="8" scrollable="false">
+
+      <!-- committed-text panel: shown while the keyboard overlay is closed -->
+      <lv_obj width="100%" height="100%" clickable="true" scrollable="false">
+        <style name="style_text_panel"/>
+        <bind_flag_if_not_eq subject="subject_text_kb_visible" flag="hidden" ref_value="0"/>
+        <lv_label bind_text="subject_entry_text" style_text_color="#col_text" style_text_font="text_20" long_mode="wrap" width="100%"/>
+        <subject_set_int_event subject="subject_text_kb_visible" trigger="clicked" value="1"/>
+      </lv_obj>
+
+      <!-- keyboard overlay: shown while subject_text_kb_visible == 1 -->
+      <lv_obj width="100%" height="100%" flex_flow="column" style_bg_opa="0" style_border_width="0" style_pad_row="10" scrollable="false">
+        <bind_flag_if_not_eq subject="subject_text_kb_visible" flag="hidden" ref_value="1"/>
+        <lv_textarea name="entry_ta" width="100%" height="56" one_line="true" placeholder_text="Type new text..."/>
+        <lv_keyboard name="entry_kb" width="100%" flex_grow="1" mode="text_lower" textarea="entry_ta">
+          <event_cb callback="text_entry_confirm_cb" trigger="ready" user_data="entry_ta"/>
+          <subject_set_int_event subject="subject_text_kb_visible" trigger="cancel" value="0"/>
+        </lv_keyboard>
+      </lv_obj>
+    </lv_obj>
+
+    <bottom_nav/>
+  </view>
+</screen>

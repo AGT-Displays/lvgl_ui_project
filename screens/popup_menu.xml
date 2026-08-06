@@ -1,0 +1,138 @@
+<!--
+  24/25: Popup menu. Three rows, each with a "+" button that expands/
+  collapses a pill of icons. Only one row can be open at a time, so instead
+  of three independent open/closed subjects this uses one shared int,
+  subject_expanded_row (0 = none, 1/2/3 = that row open): each pill is
+  hidden unless the subject equals its own row number (bind_flag_if_not_eq).
+  Toggling "the row that's already open closes, opening another closes
+  whichever was open" needs actual conditional logic (compare current value,
+  branch), which the declarative subject_* events can't express - only plain
+  unconditional sets/toggles/increments - so each "+" button calls the small
+  C callback popup_toggle_row_cb (see src/ui_callbacks.c) instead. Tapping
+  any icon inside an open pill also collapses it, via a plain declarative
+  subject_set_int_event(0) - closing doesn't need to know which row was
+  open, so no C code is needed for that half. Both the button and the pill
+  use align + ignore_layout
+  so each keeps its own fixed position (button pinned left/right, pill
+  filling the rest) regardless of whether the sibling pill is currently
+  hidden — relying on flex order alone made the "+" button jump around
+  whenever its pill sibling collapsed out of the layout.
+
+  flex_flow/flex_cross_place/pad_column are set directly on each pill
+  instance below, not inside style_icon_pill: a flex_flow declared purely
+  inside a shared <style> never actually switched these lv_obj's onto the
+  flex layout engine (only a widget's own inline flex_flow attribute does
+  that), which is why every icon was stacking at (0,0) in the top-left
+  corner instead of laying out in a row. Pill width/height are "content" so
+  the pill hugs its 4 icons instead of stretching to a fixed 690x40 box.
+
+  The "+" button and its pill are wrapped together in one content-sized
+  group per row, aligned inward from the row's edge (not pinned flush to
+  it) - matching the prototype, where the button+pill sit together as one
+  compact unit offset toward center rather than stretched edge-to-edge with
+  a big gap between the two pieces.
+-->
+<screen permanent="true">
+  <styles>
+    <style name="style_plus_btn" width="64" height="64" radius="180" bg_opa="100%" border_width="0"/>
+    <style name="style_icon_pill" width="480" height="64" bg_color="#col_card" bg_opa="100%" radius="180" border_width="0"/>
+  </styles>
+
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="Menu popup" icon="&#61641;"/>
+
+    <lv_obj width="100%" flex_grow="1" style_bg_opa="0" style_border_width="0" flex_flow="column" style_pad_hor="20" style_pad_row="28" style_flex_main_place="center" scrollable="false">
+
+      <!-- row 1: button+pill group offset inward from the left edge. The
+           button is drawn AFTER the pill (so it's on top) but pinned to the
+           group's left edge via ignore_layout+align instead of following
+           flex order, landing it right on top of the pill's near end - like
+           the pill slides out from inside the button, matching the
+           prototype, instead of sitting beside it with a gap. -->
+      <lv_obj width="100%" height="72" style_bg_opa="0" style_border_width="0" scrollable="false">
+        <lv_obj align="left_mid" x="60" ignore_layout="true" width="content" height="content" style_bg_opa="0" style_border_width="0" scrollable="false">
+          <lv_obj flex_flow="row" style_flex_cross_place="center" style_flex_main_place="space_evenly" style_pad_left="76" style_pad_right="24" scrollable="false">
+            <style name="style_icon_pill"/>
+            <bind_flag_if_not_eq subject="subject_expanded_row" flag="hidden" ref_value="1"/>
+            <lv_label text="&#61561;" clickable="true" style_text_color="#col_blue" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61556;" clickable="true" style_text_color="#col_blue" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61522;" clickable="true" style_text_color="#col_blue" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61512;" clickable="true" style_text_color="#col_blue" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+          </lv_obj>
+          <lv_button align="left_mid" ignore_layout="true" style_bg_color="#col_blue">
+            <style name="style_plus_btn"/>
+            <lv_label text="&#61543;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+            <event_cb callback="popup_toggle_row_cb" trigger="clicked" user_data="1"/>
+          </lv_button>
+        </lv_obj>
+      </lv_obj>
+
+      <!-- row 2: pill+button group offset inward from the right edge. Mirror
+           of row 1: button drawn after the pill (on top), pinned to the
+           group's right edge so it overlaps the pill's near end. -->
+      <lv_obj width="100%" height="72" style_bg_opa="0" style_border_width="0" scrollable="false">
+        <lv_obj align="right_mid" x="-60" ignore_layout="true" width="content" height="content" style_bg_opa="0" style_border_width="0" scrollable="false">
+          <lv_obj flex_flow="row" style_flex_cross_place="center" style_flex_main_place="space_evenly" style_pad_left="24" style_pad_right="76" scrollable="false">
+            <style name="style_icon_pill"/>
+            <bind_flag_if_not_eq subject="subject_expanded_row" flag="hidden" ref_value="2"/>
+            <lv_label text="&#61553;" clickable="true" style_text_color="#col_purple" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61683;" clickable="true" style_text_color="#col_purple" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61664;" clickable="true" style_text_color="#col_purple" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61465;" clickable="true" style_text_color="#col_purple" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+          </lv_obj>
+          <lv_button align="right_mid" ignore_layout="true" style_bg_color="#col_purple">
+            <style name="style_plus_btn"/>
+            <lv_label text="&#61543;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+            <event_cb callback="popup_toggle_row_cb" trigger="clicked" user_data="2"/>
+          </lv_button>
+        </lv_obj>
+      </lv_obj>
+
+      <!-- row 3: same structure as row 1 -->
+      <lv_obj width="100%" height="72" style_bg_opa="0" style_border_width="0" scrollable="false">
+        <lv_obj align="left_mid" x="60" ignore_layout="true" width="content" height="content" style_bg_opa="0" style_border_width="0" scrollable="false">
+          <lv_obj flex_flow="row" style_flex_cross_place="center" style_flex_main_place="space_evenly" style_pad_left="76" style_pad_right="24" scrollable="false">
+            <style name="style_icon_pill"/>
+            <bind_flag_if_not_eq subject="subject_expanded_row" flag="hidden" ref_value="3"/>
+            <lv_label text="&#61459;" clickable="true" style_text_color="#col_yellow" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61587;" clickable="true" style_text_color="#col_yellow" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61639;" clickable="true" style_text_color="#col_yellow" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+            <lv_label text="&#61732;" clickable="true" style_text_color="#col_yellow" style_text_font="icon_32">
+              <subject_set_int_event subject="subject_expanded_row" trigger="clicked" value="0"/>
+            </lv_label>
+          </lv_obj>
+          <lv_button align="left_mid" ignore_layout="true" style_bg_color="#col_yellow">
+            <style name="style_plus_btn"/>
+            <lv_label text="&#61543;" align="center" style_text_color="#col_text" style_text_font="icon_32"/>
+            <event_cb callback="popup_toggle_row_cb" trigger="clicked" user_data="3"/>
+          </lv_button>
+        </lv_obj>
+      </lv_obj>
+    </lv_obj>
+
+    <bottom_nav/>
+  </view>
+</screen>

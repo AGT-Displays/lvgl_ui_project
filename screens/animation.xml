@@ -1,0 +1,19 @@
+<!--
+  22: Animation preview. No animation frame assets were provided yet (the
+  prototype's cyclist image is a static mock), so Play/Stop drive a simple
+  declarative timeline (a dot sliding across the panel) as a placeholder —
+  see components/animation_preview.xml, where the timeline actually lives
+  (screens can't hold an <animations> block directly). Once real frames are
+  added to images/ and registered in globals.xml, swap the placeholder dot
+  for an lv_animimg driven by the same two buttons.
+-->
+<screen permanent="true">
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="Animação de ícone" icon="&#61448;"/>
+
+    <animation_preview flex_grow="1"/>
+
+    <bottom_nav/>
+  </view>
+</screen>

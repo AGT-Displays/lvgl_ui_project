@@ -1,0 +1,73 @@
+<!--
+  19/20: Number input. Default state (19) shows a big value with up/down
+  arrows and zero pressure. Tapping the value (20) reveals a numeric keypad
+  panel; Confirma commits the typed digits into subject_numval (needs the
+  small C callback number_input_confirm_cb, see src/ui_callbacks.c),
+  Cancela just hides the panel again with no C code involved.
+-->
+<screen permanent="true">
+  <styles>
+    <style name="style_arrow_btn" width="160" height="30" radius="10" bg_color="#col_card" bg_opa="100%" border_width="0"/>
+    <style name="style_kb_panel" bg_color="#col_card" bg_opa="100%" radius="#radius_card" border_width="0" pad_all="10"/>
+  </styles>
+
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="WordArt e teclado numérico" icon="&#62212;"/>
+
+    <lv_obj width="100%" flex_grow="1" style_bg_opa="0" style_border_width="0" flex_flow="row" style_pad_hor="20" style_pad_column="20" scrollable="false">
+
+      <!-- left: value display with up/down, tap to edit -->
+      <lv_obj flex_grow="1" height="100%" style_bg_opa="0" style_border_width="0" flex_flow="column" style_flex_main_place="center" style_flex_cross_place="center" style_pad_row="10" scrollable="false">
+        <lv_button>
+          <style name="style_arrow_btn"/>
+          <lv_label text="&#61559;" align="center" style_text_color="#col_text" style_text_font="icon_14"/>
+          <subject_increment_event subject="subject_numval" trigger="clicked" step="1" min_value="0" max_value="99"/>
+        </lv_button>
+
+        <lv_obj width="350" height="196" scrollable="false" style_bg_color="#col_card" style_bg_opa="100%" style_border_width="0" style_radius="#radius_card">
+          <lv_label align="center" bind_text="subject_numval" style_text_color="#col_text" style_text_font="text_128"/>
+          <subject_toggle_event subject="subject_kb_visible" trigger="clicked"/>
+        </lv_obj>
+
+        <lv_button>
+          <style name="style_arrow_btn"/>
+          <lv_label text="&#61560;" align="center" style_text_color="#col_text" style_text_font="icon_14"/>
+          <subject_increment_event subject="subject_numval" trigger="clicked" step="-1" min_value="0" max_value="99"/>
+        </lv_button>
+      </lv_obj>
+
+      <!-- right: numeric keypad panel, shown only while subject_kb_visible == 1.
+           The keyboard's "user_1" mode is meant to show Confirma/Cancela on
+           its own last row instead of the default OK checkmark, with no
+           separate outside button row. lv_keyboard's XML API only exposes
+           mode/popovers/textarea (no "map" attribute), so the custom keymap
+           itself can't be declared in XML — it's installed once in C by
+           setup_number_keypad_cb (see src/ui_callbacks.c), fired on
+           trigger="screen_loaded" (idempotent, so re-firing is harmless).
+           Confirma/Cancela aren't reserved LVGL symbol strings, so
+           number_keypad_key_cb intercepts the keyboard's value_changed event
+           to act on them; every other key (digits, backspace) still goes
+           through the keyboard's own default handling untouched. -->
+      <lv_obj flex_grow="1" height="100%" flex_flow="column" style_pad_row="8" scrollable="false">
+        <style name="style_kb_panel"/>
+        <bind_flag_if_eq subject="subject_kb_visible" flag="hidden" ref_value="0"/>
+
+        <lv_textarea name="numval_ta" width="100%" height="40" one_line="true" placeholder_text="0"/>
+        <lv_keyboard
+          name="numval_kb"
+          width="100%"
+          height="200"
+          mode="user_1"
+          textarea="numval_ta"
+        >
+          <event_cb callback="number_keypad_key_cb" trigger="value_changed" user_data="numval_ta"/>
+        </lv_keyboard>
+      </lv_obj>
+    </lv_obj>
+
+    <event_cb callback="setup_number_keypad_cb" trigger="screen_loaded" user_data="numval_kb"/>
+
+    <bottom_nav/>
+  </view>
+</screen>

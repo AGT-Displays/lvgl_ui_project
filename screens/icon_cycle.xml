@@ -1,0 +1,63 @@
+<!--
+  23: Icon cycle. 4 buttons around a center panel; each sets
+  subject_current_icon, and the center panel holds one overlaid label per
+  icon, shown only while the subject matches its value (bind_flag_if_not_eq).
+-->
+<screen permanent="true">
+  <styles>
+    <style name="style_icon_btn" width="170" height="56" radius="#radius_pill" bg_opa="100%" border_width="0"/>
+    <style name="style_center_panel" width="180" height="180" bg_color="#col_card" bg_opa="100%" radius="#radius_card" border_width="0"/>
+  </styles>
+
+  <view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+    <style name="style_screen_bg"/>
+    <header title="Ícones variáveis" icon="&#61502;"/>
+
+    <lv_obj width="100%" flex_grow="1" style_bg_opa="0" style_border_width="0" flex_flow="row" style_pad_hor="20" style_flex_main_place="space_between" style_flex_cross_place="center" scrollable="false">
+
+      <lv_obj width="content" height="100%" flex_flow="column" style_bg_opa="0" style_border_width="0" style_flex_main_place="center" style_pad_row="24" scrollable="false">
+        <lv_button style_bg_color="#col_green">
+          <style name="style_icon_btn"/>
+          <lv_label text="ICON 1" align="center" style_text_color="#col_text" style_text_font="text_16"/>
+          <subject_set_int_event subject="subject_current_icon" trigger="clicked" value="1"/>
+        </lv_button>
+        <lv_button style_bg_color="#col_blue">
+          <style name="style_icon_btn"/>
+          <lv_label text="ICON 2" align="center" style_text_color="#col_text" style_text_font="text_16"/>
+          <subject_set_int_event subject="subject_current_icon" trigger="clicked" value="2"/>
+        </lv_button>
+      </lv_obj>
+
+      <lv_obj align="center" scrollable="false">
+        <style name="style_center_panel"/>
+        <lv_label text="&#61473;" align="center" style_text_color="#col_teal" style_text_font="icon_48">
+          <bind_flag_if_not_eq subject="subject_current_icon" flag="hidden" ref_value="1"/>
+        </lv_label>
+        <lv_label text="&#61502;" align="center" style_text_color="#col_blue" style_text_font="icon_48">
+          <bind_flag_if_not_eq subject="subject_current_icon" flag="hidden" ref_value="2"/>
+        </lv_label>
+        <lv_label text="&#61683;" align="center" style_text_color="#col_purple" style_text_font="icon_48">
+          <bind_flag_if_not_eq subject="subject_current_icon" flag="hidden" ref_value="3"/>
+        </lv_label>
+        <lv_label text="&#61553;" align="center" style_text_color="#col_red" style_text_font="icon_48">
+          <bind_flag_if_not_eq subject="subject_current_icon" flag="hidden" ref_value="4"/>
+        </lv_label>
+      </lv_obj>
+
+      <lv_obj width="content" height="100%" flex_flow="column" style_bg_opa="0" style_border_width="0" style_flex_main_place="center" style_pad_row="24" scrollable="false">
+        <lv_button style_bg_color="#col_purple">
+          <style name="style_icon_btn"/>
+          <lv_label text="ICON 3" align="center" style_text_color="#col_text" style_text_font="text_16"/>
+          <subject_set_int_event subject="subject_current_icon" trigger="clicked" value="3"/>
+        </lv_button>
+        <lv_button style_bg_color="#col_red">
+          <style name="style_icon_btn"/>
+          <lv_label text="ICON 4" align="center" style_text_color="#col_text" style_text_font="text_16"/>
+          <subject_set_int_event subject="subject_current_icon" trigger="clicked" value="4"/>
+        </lv_button>
+      </lv_obj>
+    </lv_obj>
+
+    <bottom_nav/>
+  </view>
+</screen>

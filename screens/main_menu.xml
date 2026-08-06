@@ -1,0 +1,154 @@
+<!--
+  17: Main menu / home screen. No shared header (it has its own top icons):
+  top-left -> wifi_config, top-right -> brightness. The wifi + numeric cards
+  in the left column link to their screens too; the temp/weather cards are
+  purely decorative ("informative"), matching the prototype.
+-->
+<screen permanent="true">
+	<styles>
+		<style name="style_temp_arc_bg" arc_color="0xffffff" arc_opa="60%" arc_width="10" arc_rounded="true" />
+		<style name="style_temp_arc_ind" arc_color="0xffe08a" arc_width="10" arc_rounded="true" />
+		<style name="style_temp_arc_knob" bg_color="0xffe08a" bg_opa="100%" border_width="0" />
+		<style name="style_mini_round_btn" radius="180" bg_color="#col_card_light" bg_opa="100%" border_width="0" />
+	</styles>
+
+	<view width="100%" height="100%" flex_flow="column" style_pad_row="0" scrollable="false">
+		<style name="style_screen_bg" />
+
+		<!-- top icon row -->
+		<lv_obj
+			width="100%"
+			height="72"
+			style_bg_opa="0"
+			style_border_width="0"
+			flex_flow="row"
+			style_flex_main_place="space_between"
+			style_flex_cross_place="center"
+			style_pad_hor="20"
+			scrollable="false"
+			scrollbar_mode="off"
+		>
+			<lv_button width="44" height="44" style_bg_color="#col_card">
+				<style name="style_nav_icon_btn" />
+				<style name="style_nav_icon_btn_pressed" selector="pressed" />
+				<lv_label text="&#61473;" align="center" style_text_color="#col_blue" style_text_font="icon_18" />
+				<!-- Meant to replay the startup animation (no asset provided yet).
+				     Wifi is reachable via the purple card below, so this is left
+				     unwired for now instead of pointing somewhere wrong. -->
+			</lv_button>
+
+			<lv_button width="44" height="44" style_bg_color="#col_card">
+				<style name="style_nav_icon_btn" />
+				<style name="style_nav_icon_btn_pressed" selector="pressed" />
+				<lv_label text="BRT" align="center" style_text_color="#col_yellow" style_text_font="text_14" />
+				<screen_load_event screen="brightness" trigger="clicked" />
+			</lv_button>
+		</lv_obj>
+
+		<!-- main content: 3 columns -->
+		<lv_obj
+			width="100%"
+			flex_grow="1"
+			style_bg_opa="0"
+			style_border_width="0"
+			flex_flow="row"
+			style_pad_hor="20"
+			style_pad_column="16"
+			scrollable="false"
+		>
+			<!-- column 1: wifi card + numeric card stacked -->
+			<lv_obj flex_grow="1" height="100%" style_bg_opa="0" style_border_width="0" style_pad_all="0" flex_flow="column" style_pad_row="16" scrollable="false">
+				<lv_button flex_grow="1" width="100%" style_bg_color="#col_purple">
+					<style name="style_card" />
+					<lv_label text="&#61931;" align="center" style_text_color="#col_text" style_text_font="icon_32" />
+					<screen_load_event screen="wifi_config" trigger="clicked" />
+				</lv_button>
+
+				<lv_button flex_grow="1" width="100%" style_bg_color="#col_teal">
+					<style name="style_card" />
+					<lv_label text="123" align="center" style_text_color="#col_text" style_text_font="text_32" />
+					<screen_load_event screen="number_input" trigger="clicked" />
+				</lv_button>
+			</lv_obj>
+
+			<!-- column 2: decorative temperature widget. The arc/label/button-row
+			     used to be centered via flex_flow=column + flex_cross_place=center,
+			     but that consistently resolved ~27px left of the card's true
+			     center (confirmed via the Editor's inspector: the card itself sits
+			     at the right x/w, but its flex-centered children didn't) - some
+			     resolution quirk specific to horizontal centering in a
+			     COLUMN-direction flex container in this Editor/LVGL build. Every
+			     other tricky positioning case in this project got solved by
+			     dropping flex for the element in question and using
+			     align+ignore_layout instead, so that's the fix here too: each
+			     child is independently pinned to the card's center with a fixed y
+			     offset, stacking them without relying on flex at all. Offsets are
+			     derived from the actual content stack height (120 arc + 10 gap +
+			     ~18 label + 10 gap + 52 button row = 210), split symmetrically
+			     around the card's vertical center. -->
+			<lv_obj
+				flex_grow="1"
+				height="100%"
+				style_bg_color="#col_red"
+				style_bg_opa="100%"
+				style_border_width="0"
+				scrollable="false"
+				scrollbar_mode="off"
+			>
+				<style name="style_card" />
+				<lv_arc align="center" y="-45" ignore_layout="true" width="120" height="120" min_value="0" max_value="40" value="20" bg_start_angle="120" bg_end_angle="60">
+					<style name="style_temp_arc_bg" selector="main" />
+					<style name="style_temp_arc_ind" selector="indicator" />
+					<style name="style_temp_arc_knob" selector="knob" />
+					<lv_label text="20°C" align="center" style_text_color="#col_text" style_text_font="text_18" />
+				</lv_arc>
+				<lv_label text="Temperatura do quarto" align="center" y="34" ignore_layout="true" style_text_color="#col_text" style_text_font="text_14" />
+				<lv_obj
+					align="center"
+					y="79"
+					ignore_layout="true"
+					overflow_visible="true"
+					width="180"
+					height="76"
+					style_bg_opa="0"
+					style_border_width="0"
+					style_pad_all="0"
+					scrollable="false"
+				>
+					<lv_button align="center" x="-54" ignore_layout="true" width="36" height="36">
+						<style name="style_mini_round_btn" />
+						<lv_label text="&#61512;" align="center" style_text_color="#col_text" style_text_font="icon_14" />
+					</lv_button>
+					<lv_button align="center" x="0" ignore_layout="true" width="44" height="44">
+						<style name="style_mini_round_btn" />
+						<lv_label text="&#61515;" align="center" style_text_color="#col_text" style_text_font="icon_18" />
+					</lv_button>
+					<lv_button align="center" x="54" ignore_layout="true" width="36" height="36">
+						<style name="style_mini_round_btn" />
+						<lv_label text="&#61521;" align="center" style_text_color="#col_text" style_text_font="icon_14" />
+					</lv_button>
+				</lv_obj>
+			</lv_obj>
+
+			<!-- column 3: decorative weather widget -->
+			<lv_obj
+				flex_grow="1"
+				height="100%"
+				style_bg_color="#col_blue"
+				style_bg_opa="100%"
+				style_border_width="0"
+				flex_flow="column"
+				style_flex_main_place="center"
+				style_pad_row="4"
+				scrollable="false"
+			>
+				<style name="style_card" />
+				<lv_label text="12°" style_text_color="#col_text" style_text_font="text_32" />
+				<lv_label text="Neve" style_text_color="#col_text" style_text_font="text_18" />
+				<lv_label text="Chengdu" style_text_color="#col_text" style_text_font="text_14" />
+			</lv_obj>
+		</lv_obj>
+
+		<bottom_nav />
+	</view>
+</screen>

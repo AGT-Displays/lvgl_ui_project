@@ -1,0 +1,28 @@
+<!--
+  Shared top bar used by every screen except main_menu: a rounded pill on the
+  left with an icon + title, and a Home button on the right that always
+  returns to main_menu.
+-->
+<component>
+  <api>
+    <prop name="title" type="string" default="Screen"/>
+    <prop name="icon" type="string" default="&#61641;"/>
+  </api>
+
+  <view width="100%" height="64" flex_flow="row" style_bg_opa="0" style_border_width="0" style_pad_hor="20" style_pad_top="16" style_pad_bottom="0" style_flex_main_place="space_between" style_flex_cross_place="center" scrollable="false">
+    <lv_obj width="content" flex_flow="row" height="44" style_flex_cross_place="center" style_pad_column="10" style_pad_hor="18">
+      <style name="style_header_pill"/>
+      <lv_label text="$icon" style_text_color="#col_text" style_text_font="icon_18"/>
+      <lv_label text="$title">
+        <style name="style_header_title"/>
+      </lv_label>
+    </lv_obj>
+
+    <lv_button width="44" height="44" align="right_mid" style_bg_color="#col_card">
+      <style name="style_nav_icon_btn"/>
+      <style name="style_nav_icon_btn_pressed" selector="pressed"/>
+      <lv_label text="&#61461;" align="center" style_text_color="#col_blue" style_text_font="icon_18"/>
+      <screen_load_event screen="main_menu" trigger="clicked"/>
+    </lv_button>
+  </view>
+</component>

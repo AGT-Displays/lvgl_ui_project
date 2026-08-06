@@ -1,0 +1,45 @@
+<!--
+  Animation preview + Play/Stop controls for screens/animation.xml. Pulled out
+  into its own component because <animations>/<timeline> would only be valid
+  inside <component> or <widget> anyway — screens may only contain
+  consts/styles/view.
+
+  The dot's slide is driven by a plain lv_anim_t in C (anim_play_dot_cb /
+  anim_stop_dot_cb, see src/ui_callbacks.c) rather than a declarative
+  <animations>/<timeline>/<play_timeline_event> block: this installed
+  Editor's validator rejects every attribute LVGL's own docs describe for
+  <animation> (target/duration/prop/start/end all come back as "Unknown
+  attribute"), so its actual bundled schema for that feature doesn't match
+  what's published. The C callback route sidesteps that entirely and uses
+  the same proven event_cb pattern already working elsewhere in this project.
+-->
+<component>
+  <styles>
+    <style name="style_preview_panel" bg_color="0x1c5f66" bg_opa="100%" radius="#radius_card" border_width="0"/>
+    <style name="style_round_action_btn" width="64" height="64" radius="180" bg_opa="100%" border_width="0"/>
+  </styles>
+
+  <view width="100%" style_bg_opa="0" style_border_width="0" flex_flow="row" style_pad_column="20" style_flex_cross_place="center" scrollable="false">
+
+    <lv_obj flex_grow="1" height="260" style_flex_main_place="center" scrollable="false" scrollbar_mode="off">
+      <style name="style_preview_panel"/>
+      <lv_obj name="anim_dot" width="48" height="48" align="center" style_radius="180" style_bg_color="#col_yellow" style_bg_opa="100%" style_border_width="0"/>
+    </lv_obj>
+
+    <lv_obj height="260" flex_flow="column" style_bg_opa="0" style_border_width="0" style_flex_main_place="center" style_pad_row="20" scrollable="false">
+      <lv_button style_bg_color="#col_green">
+        <style name="style_round_action_btn"/>
+        <lv_label text="&#61515;" align="center" style_text_color="#col_text" style_text_font="icon_24"/>
+        <event_cb callback="anim_play_dot_cb" trigger="clicked" user_data="anim_dot"/>
+        <subject_set_int_event subject="subject_anim_playing" trigger="clicked" value="1"/>
+      </lv_button>
+
+      <lv_button style_bg_color="#col_red">
+        <style name="style_round_action_btn"/>
+        <lv_label text="&#61517;" align="center" style_text_color="#col_text" style_text_font="icon_24"/>
+        <event_cb callback="anim_stop_dot_cb" trigger="clicked" user_data="anim_dot"/>
+        <subject_set_int_event subject="subject_anim_playing" trigger="clicked" value="0"/>
+      </lv_button>
+    </lv_obj>
+  </view>
+</component>

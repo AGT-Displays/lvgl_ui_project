@@ -1,0 +1,11 @@
+17 is the main menu. There the user must access all functions. Top left goes to wireless configuration screen, numver 29. Below wireless config there's the number input interface, which is image number 20. The two vertical images next are meant as informative of temperature and climate. Down, the circular buttons are as follows? number input page, same as before, number 20, then animation screen, number 22, icon screen page 23, pop up menu screen, number 25 and keyboard screen, number 26. Finally, there at the top there's a sun symbol that leads to the brightness controll screen, which is number 33.
+
+The complexities of each screen:
+- Buttons must react to the user's touch, moving or highlighting when interacted with.
+- Screens 19 and 20 are the same. You enter it and its 19 with zeroed numbers. Then you may click the number and a keyboard will show up, like image 20. You can also change the numbers by clicking the arrows up and down.
+- Screen 22 shows an animation that can be started and stopped by the buttons beside it.
+- Screen 23 has an icon in the middle that can be cycled by the buttons around it.
+- Screen 24 and 25 are the same. You click those buttons and they expand into those options tabs.
+- Screen 26 and 27 are the same. Text is shown in that empty panel that, if clicked, brings upon a keyboard for new text to be written. The new text overwrites the one before, but if the user changes his mind, he can press esc on the keyboard and return to the panel with the text intact.
+- Screen 29 and 31 are the same. One is for going with wi-fi connection, where you can enter the wi-fi name and password, while the other is for showing a QR code meant to house a shareable network. The user cycles between the two screen with the buttons on the left side.
+- Screen 33 and 34 are the same, with 34 just showing an effect of the buttons being pressed.
